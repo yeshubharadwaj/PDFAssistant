@@ -1,0 +1,24 @@
+image: docker:24.0.6
+
+services:
+  - docker:24.0.6-dind
+
+variables:
+  DOCKER_TLS_CERTDIR: ""
+
+stages:
+  - test
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t gcr.io/$canvas-verve-184209/pdf-qna-api .
+    - docker push gcr.io/$canvas-verve-184209/pdf-qna-api
+
+deploy:
+  stage: deploy
+  script:
+  - terraform init
+  - terraform apply -auto-approve
